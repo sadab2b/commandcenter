@@ -1,0 +1,438 @@
+
+<h2 class="sr-only">Command Center v2 for Northstar EB-5 with channel-separated metrics</h2>
+<style>
+.cc{font-family:var(--font-sans);max-width:100%}
+.cc-header{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:14px}
+.cc-brand{display:flex;align-items:center;gap:10px}
+.cc-logo{width:28px;height:28px;border-radius:6px;background:#0F6E56;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:500;font-size:13px}
+.cc-title{font-size:14px;font-weight:500;margin:0}
+.cc-sub{font-size:11px;color:var(--color-text-secondary);margin:0}
+.cc-actions{display:flex;align-items:center;gap:8px}
+.cc-pill{font-size:11px;padding:4px 10px;border-radius:100px;background:#E1F5EE;color:#0F6E56;font-weight:500}
+.cc-period{font-size:11px;color:var(--color-text-secondary);padding:5px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md)}
+.section-title{font-size:10px;letter-spacing:1.5px;color:var(--color-text-tertiary);text-transform:uppercase;font-weight:500;margin:0 0 8px;padding:0 4px}
+.metrics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.metric{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px}
+.metric-label{font-size:10px;color:var(--color-text-secondary);margin:0 0 4px;letter-spacing:.3px}
+.metric-value{font-size:20px;font-weight:500;margin:0;line-height:1.1;letter-spacing:-.3px}
+.metric-trend{font-size:10px;margin-top:4px}
+.trend-up{color:#0F6E56}
+.trend-down{color:#A32D2D}
+.trend-neutral{color:var(--color-text-tertiary)}
+@media(max-width:600px){.metrics-grid{grid-template-columns:repeat(2,1fr)}}
+.row-2{display:grid;grid-template-columns:1.4fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:600px){.row-2{grid-template-columns:1fr}}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.card-title{font-size:12px;font-weight:500;margin:0}
+.card-meta{font-size:10px;color:var(--color-text-tertiary)}
+.forecast-amount{font-size:26px;font-weight:500;letter-spacing:-.8px;margin:6px 0 4px}
+.forecast-amount span{color:#0F6E56;font-size:18px}
+.forecast-desc{font-size:11px;color:var(--color-text-secondary);margin:0;line-height:1.5}
+.bars{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.bar-row{display:grid;grid-template-columns:80px 1fr 60px;gap:10px;align-items:center;font-size:11px}
+.bar-label{color:var(--color-text-secondary)}
+.bar-track{height:7px;background:var(--color-background-secondary);border-radius:4px;overflow:hidden}
+.bar-fill{height:100%;background:#0F6E56;border-radius:4px}
+.bar-value{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+.health-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.health{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:9px 11px}
+.health-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:2px}
+.health-name{font-size:11px;color:var(--color-text-secondary)}
+.dot{width:7px;height:7px;border-radius:50%}
+.dot-green{background:#0F6E56}
+.dot-amber{background:#BA7517}
+.dot-red{background:#A32D2D}
+.health-val{font-size:13px;font-weight:500;margin:0}
+.channel-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:600px){.channel-grid{grid-template-columns:1fr}}
+.ch-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px}
+.ch-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding-bottom:10px;border-bottom:0.5px solid var(--color-border-tertiary)}
+.ch-name{font-size:12px;font-weight:500;display:flex;align-items:center;gap:8px;margin:0}
+.ch-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:500;color:#fff}
+.icon-em{background:#1D9E75}
+.icon-li{background:#185FA5}
+.icon-meta{background:#534AB7}
+.icon-google{background:#BA7517}
+.ch-period{font-size:10px;color:var(--color-text-tertiary)}
+.ch-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.ch-stat{padding:6px 0}
+.ch-stat-l{font-size:9px;color:var(--color-text-tertiary);margin:0;letter-spacing:.3px;text-transform:uppercase}
+.ch-stat-v{font-size:16px;font-weight:500;margin:3px 0 0;line-height:1;font-variant-numeric:tabular-nums}
+.ch-stat-trend{font-size:9px;margin-top:3px}
+.row-3{display:grid;grid-template-columns:1.3fr 1fr;gap:10px;margin-bottom:20px}
+@media(max-width:600px){.row-3{grid-template-columns:1fr}}
+.pipeline-row{display:grid;grid-template-columns:1fr 50px 70px 60px;gap:8px;padding:8px 0;border-bottom:0.5px solid var(--color-border-tertiary);font-size:11px;align-items:center}
+.pipeline-row:last-child{border-bottom:0}
+.pipeline-row:first-of-type{border-top:0.5px solid var(--color-border-tertiary);margin-top:6px}
+.stage-name{display:flex;align-items:center;gap:7px;font-weight:500}
+.stage-num{color:var(--color-text-secondary);text-align:center;font-variant-numeric:tabular-nums}
+.stage-val{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
+.stage-conv{text-align:right;font-size:10px;color:var(--color-text-tertiary)}
+.stage-dot{width:6px;height:6px;border-radius:50%}
+.hot-list{display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto}
+.hot-item{display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);font-size:11px}
+.hot-name{font-weight:500;margin:0;line-height:1.3}
+.hot-signal{font-size:10px;color:var(--color-text-secondary);margin:2px 0 0}
+.hot-temp{font-size:10px;padding:3px 7px;border-radius:100px;font-weight:500;white-space:nowrap}
+.t-hot{background:#FAECE7;color:#993C1D}
+.t-warm{background:#FAEEDA;color:#854F0B}
+.activity{display:flex;flex-direction:column;gap:0}
+.act{display:grid;grid-template-columns:48px 1fr 60px;gap:10px;padding:7px 0;border-top:0.5px solid var(--color-border-tertiary);font-size:11px;align-items:center}
+.act:first-child{border-top:0}
+.act-time{color:var(--color-text-tertiary);font-variant-numeric:tabular-nums;font-size:10px}
+.act-text{line-height:1.3}
+.act-text strong{font-weight:500}
+.act-channel{font-size:9px;padding:2px 6px;border-radius:4px;text-align:center;font-weight:500}
+.ac-em{background:#E1F5EE;color:#0F6E56}
+.ac-li{background:#E6F1FB;color:#185FA5}
+.ac-wa{background:#EAF3DE;color:#3B6D11}
+.ac-web{background:#EEEDFE;color:#534AB7}
+.insights{margin-top:14px;padding:11px 14px;background:#E1F5EE;border-radius:var(--border-radius-md);border-left:3px solid #0F6E56}
+.ins-label{font-size:10px;letter-spacing:1.2px;color:#0F6E56;text-transform:uppercase;font-weight:500;margin:0 0 4px}
+.ins-text{font-size:11px;color:#085041;margin:0;line-height:1.5}
+</style>
+
+<div class="cc">
+
+<div class="cc-header">
+<div class="cc-brand">
+<div class="cc-logo">N</div>
+<div>
+<p class="cc-title">Northstar — Command Center</p>
+<p class="cc-sub">EB-5 Capital Raising · Peach Tree Group</p>
+</div>
+</div>
+<div class="cc-actions">
+<span class="cc-pill">● Live</span>
+<span class="cc-period">Últimos 30 días</span>
+</div>
+</div>
+
+<p class="section-title">Vista ejecutiva</p>
+<div class="metrics-grid">
+<div class="metric">
+<p class="metric-label">Pipeline cualificado</p>
+<p class="metric-value">$4.8M USD</p>
+<p class="metric-trend trend-up">▲ 18% vs mes anterior</p>
+</div>
+<div class="metric">
+<p class="metric-label">Reuniones agendadas</p>
+<p class="metric-value">23</p>
+<p class="metric-trend trend-up">▲ 6 vs mes anterior</p>
+</div>
+<div class="metric">
+<p class="metric-label">Inversionistas calificados</p>
+<p class="metric-value">87</p>
+<p class="metric-trend trend-up">▲ 14 vs mes anterior</p>
+</div>
+<div class="metric">
+<p class="metric-label">Reply rate global</p>
+<p class="metric-value">3.4%</p>
+<p class="metric-trend trend-up">▲ 0.6 pts vs benchmark</p>
+</div>
+</div>
+
+<div class="row-2">
+<div class="card">
+<div class="card-header">
+<p class="card-title">Forecast de cierre · próximos 60 días</p>
+<span class="card-meta">Modelo predictivo</span>
+</div>
+<p class="forecast-amount">$1.6M <span>USD</span></p>
+<p class="forecast-desc">Proyección basada en pipeline actual y tasas históricas de conversión por etapa.</p>
+<div class="bars">
+<div class="bar-row">
+<span class="bar-label">Conservador</span>
+<div class="bar-track"><div class="bar-fill" style="width:55%;background:#888780"></div></div>
+<span class="bar-value">$900K</span>
+</div>
+<div class="bar-row">
+<span class="bar-label">Esperado</span>
+<div class="bar-track"><div class="bar-fill" style="width:78%"></div></div>
+<span class="bar-value">$1.6M</span>
+</div>
+<div class="bar-row">
+<span class="bar-label">Optimista</span>
+<div class="bar-track"><div class="bar-fill" style="width:100%;background:#5BBF8E"></div></div>
+<span class="bar-value">$2.4M</span>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<p class="card-title">Health score por canal</p>
+<span class="card-meta">Tiempo real</span>
+</div>
+<div class="health-grid">
+<div class="health">
+<div class="health-row"><span class="health-name">Email</span><div class="dot dot-green"></div></div>
+<p class="health-val">94%</p>
+</div>
+<div class="health">
+<div class="health-row"><span class="health-name">LinkedIn</span><div class="dot dot-green"></div></div>
+<p class="health-val">87%</p>
+</div>
+<div class="health">
+<div class="health-row"><span class="health-name">Meta Ads</span><div class="dot dot-green"></div></div>
+<p class="health-val">91%</p>
+</div>
+<div class="health">
+<div class="health-row"><span class="health-name">Google Ads</span><div class="dot dot-amber"></div></div>
+<p class="health-val">76%</p>
+</div>
+</div>
+</div>
+</div>
+
+<p class="section-title">Performance por canal</p>
+<div class="channel-grid">
+
+<div class="ch-card">
+<div class="ch-head">
+<p class="ch-name"><span class="ch-icon icon-em">@</span>Email outbound</p>
+<span class="ch-period">Últimos 30 días</span>
+</div>
+<div class="ch-stats">
+<div class="ch-stat">
+<p class="ch-stat-l">Enviados</p>
+<p class="ch-stat-v">8,420</p>
+<p class="ch-stat-trend trend-up">▲ 12%</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">Reply rate</p>
+<p class="ch-stat-v">3.8%</p>
+<p class="ch-stat-trend trend-up">▲ 0.4 pts</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">Reuniones</p>
+<p class="ch-stat-v">14</p>
+<p class="ch-stat-trend trend-up">▲ 4</p>
+</div>
+</div>
+</div>
+
+<div class="ch-card">
+<div class="ch-head">
+<p class="ch-name"><span class="ch-icon icon-li">in</span>LinkedIn outreach</p>
+<span class="ch-period">Últimos 30 días</span>
+</div>
+<div class="ch-stats">
+<div class="ch-stat">
+<p class="ch-stat-l">Connections</p>
+<p class="ch-stat-v">412</p>
+<p class="ch-stat-trend trend-up">▲ 8%</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">Aceptación</p>
+<p class="ch-stat-v">34%</p>
+<p class="ch-stat-trend trend-neutral">— estable</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">Reply rate</p>
+<p class="ch-stat-v">11%</p>
+<p class="ch-stat-trend trend-up">▲ 1.2 pts</p>
+</div>
+</div>
+</div>
+
+<div class="ch-card">
+<div class="ch-head">
+<p class="ch-name"><span class="ch-icon icon-meta">M</span>Meta Ads</p>
+<span class="ch-period">Últimos 30 días</span>
+</div>
+<div class="ch-stats">
+<div class="ch-stat">
+<p class="ch-stat-l">Impresiones</p>
+<p class="ch-stat-v">142K</p>
+<p class="ch-stat-trend trend-up">▲ 22%</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">CTR</p>
+<p class="ch-stat-v">2.1%</p>
+<p class="ch-stat-trend trend-up">▲ 0.3 pts</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">CPM</p>
+<p class="ch-stat-v">$8.40</p>
+<p class="ch-stat-trend trend-down">▼ $1.20</p>
+</div>
+</div>
+</div>
+
+<div class="ch-card">
+<div class="ch-head">
+<p class="ch-name"><span class="ch-icon icon-google">G</span>Google Ads</p>
+<span class="ch-period">Últimos 30 días</span>
+</div>
+<div class="ch-stats">
+<div class="ch-stat">
+<p class="ch-stat-l">Impresiones</p>
+<p class="ch-stat-v">38K</p>
+<p class="ch-stat-trend trend-neutral">— estable</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">CTR</p>
+<p class="ch-stat-v">4.2%</p>
+<p class="ch-stat-trend trend-up">▲ 0.5 pts</p>
+</div>
+<div class="ch-stat">
+<p class="ch-stat-l">CPC</p>
+<p class="ch-stat-v">$3.80</p>
+<p class="ch-stat-trend trend-down">▼ $0.40</p>
+</div>
+</div>
+</div>
+
+</div>
+
+<p class="section-title">Pipeline activo</p>
+<div class="row-3">
+<div class="card">
+<div class="card-header">
+<p class="card-title">Pipeline por etapa</p>
+<span class="card-meta">87 inversionistas</span>
+</div>
+<div>
+<div class="pipeline-row">
+<div class="stage-name"><div class="stage-dot" style="background:#9FE1CB"></div>Contactado</div>
+<div class="stage-num">52</div>
+<div class="stage-val">$2.6M</div>
+<div class="stage-conv">—</div>
+</div>
+<div class="pipeline-row">
+<div class="stage-name"><div class="stage-dot" style="background:#5BBF8E"></div>Interesado</div>
+<div class="stage-num">21</div>
+<div class="stage-val">$1.0M</div>
+<div class="stage-conv">40%</div>
+</div>
+<div class="pipeline-row">
+<div class="stage-name"><div class="stage-dot" style="background:#1D9E75"></div>Reunión agendada</div>
+<div class="stage-num">9</div>
+<div class="stage-val">$450K</div>
+<div class="stage-conv">43%</div>
+</div>
+<div class="pipeline-row">
+<div class="stage-name"><div class="stage-dot" style="background:#0F6E56"></div>Propuesta enviada</div>
+<div class="stage-num">3</div>
+<div class="stage-val">$150K</div>
+<div class="stage-conv">33%</div>
+</div>
+<div class="pipeline-row">
+<div class="stage-name"><div class="stage-dot" style="background:#085041"></div>En cierre</div>
+<div class="stage-num">2</div>
+<div class="stage-val">$100K</div>
+<div class="stage-conv">67%</div>
+</div>
+</div>
+</div>
+
+<div class="card">
+<div class="card-header">
+<p class="card-title">Oportunidades calientes</p>
+<span class="card-meta">Top 8</span>
+</div>
+<div class="hot-list">
+<div class="hot-item">
+<div>
+<p class="hot-name">Carlos Mendoza · CDMX</p>
+<p class="hot-signal">Visitó landing 5x · respondió 2x</p>
+</div>
+<span class="hot-temp t-hot">Caliente</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Ana Ruiz · Monterrey</p>
+<p class="hot-signal">Pidió brochure · agendó call</p>
+</div>
+<span class="hot-temp t-hot">Caliente</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Roberto Salinas · GDL</p>
+<p class="hot-signal">Respondió email · solicitó info</p>
+</div>
+<span class="hot-temp t-hot">Caliente</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">María Fdez · CDMX</p>
+<p class="hot-signal">Visitó landing 3x esta semana</p>
+</div>
+<span class="hot-temp t-warm">Tibio</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Juan Treviño · MTY</p>
+<p class="hot-signal">Aceptó conexión LinkedIn</p>
+</div>
+<span class="hot-temp t-warm">Tibio</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Patricia López · CDMX</p>
+<p class="hot-signal">Click en ad · visitó landing</p>
+</div>
+<span class="hot-temp t-warm">Tibio</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Miguel Ángel S · QRO</p>
+<p class="hot-signal">Descargó guía EB-5</p>
+</div>
+<span class="hot-temp t-warm">Tibio</span>
+</div>
+<div class="hot-item">
+<div>
+<p class="hot-name">Diana Castro · CDMX</p>
+<p class="hot-signal">Reaccionó a 2 posts LinkedIn</p>
+</div>
+<span class="hot-temp t-warm">Tibio</span>
+</div>
+</div>
+</div>
+</div>
+
+<p class="section-title">Actividad reciente · equipo comercial</p>
+<div class="card" style="padding:6px 14px">
+<div class="activity">
+<div class="act">
+<span class="act-time">11:42</span>
+<span class="act-text"><strong>Carlos M.</strong> respondió: "Me interesa, ¿podemos agendar?"</span>
+<span class="act-channel ac-em">Email</span>
+</div>
+<div class="act">
+<span class="act-time">11:18</span>
+<span class="act-text"><strong>Ana R.</strong> aceptó conexión y solicitó brochure</span>
+<span class="act-channel ac-li">LinkedIn</span>
+</div>
+<div class="act">
+<span class="act-time">10:55</span>
+<span class="act-text"><strong>Roberto S.</strong> agendó reunión para jueves 11am</span>
+<span class="act-channel ac-em">Email</span>
+</div>
+<div class="act">
+<span class="act-time">10:30</span>
+<span class="act-text"><strong>María F.</strong> visitó landing 3a vez esta semana</span>
+<span class="act-channel ac-web">Web</span>
+</div>
+<div class="act">
+<span class="act-time">10:12</span>
+<span class="act-text"><strong>Juan T.</strong> respondió WhatsApp solicitando info</span>
+<span class="act-channel ac-wa">WhatsApp</span>
+</div>
+<div class="act">
+<span class="act-time">09:48</span>
+<span class="act-text"><strong>Diana C.</strong> reaccionó al post sobre EB-5 timeline</span>
+<span class="act-channel ac-li">LinkedIn</span>
+</div>
+</div>
+</div>
+
+<div class="insights">
+<p class="ins-label">▸ AI Insight semanal</p>
+<p class="ins-text">Los emails enviados los martes entre 10am y 12pm están generando 38% más respuestas que el promedio. Recomendamos concentrar el 60% del volumen en esa ventana las próximas 2 semanas. Los anuncios de Meta dirigidos a CDMX están sub-performando vs Monterrey por 22% — considerar reasignar presupuesto.</p>
+</div>
+
+</div>
